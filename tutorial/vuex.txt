@@ -180,3 +180,117 @@ rootState:
 
 ---------------
 -------------------------------------------------------------------------------------------------------
+mapper Helpers : 
+
+import map helpers 
+import { mapGetters,mapActions} from 'vuex'
+
+actions helper : 
+ mapActions cn take single or array of actions
+
+<template>
+  <button @click="addSome({ value: 10 })">Inc</button> //we can payload here
+</template>
+
+import { mapActions } from 'vuex';
+export default {
+  methods: {
+    ...mapActions(['addSome']),
+  },
+};
+
+ map getters: 
+getters can take array of Getters
+
+<h3>{{ finalCounter }}</h3>//using computed property
+
+import { mapGetters } from 'vuex';
+export default {
+  computed: {
+    // counter() {
+    //   return this.$store.getters.finalCounter;
+    // },
+    ...mapGetters(['finalCounter']),
+  },
+};
+
+----------------------------------------------------------------------------------------------------------------
+modules :
+we have different individual modules that can be used in create store 
+
+const counterModule = {
+  state() {
+    return {
+      count: 1,
+    };
+  },
+  mutations: {
+    addOne(state, payload) {
+      state.count += payload.value;
+    },
+    addSome(state, payload) {
+      state.count += payload.value;
+    },
+  },
+  getters: {
+    finalCounter(state) {
+      return state.count * 3;
+    },
+    favoriteCount(state, getters) {
+      const final = getters.finalCounter;
+      if (final < 0) {
+        return 0;
+      }
+      if (final > 100) {
+        return 100;
+      }
+      return final;
+    },
+  },
+  actions: {
+    addOne(context, payload) {
+      setTimeout(() => {
+        context.commit('addOne', payload);
+      }, 1000);
+    },
+    addSome(context, payload) {
+      console.log(context);
+      context.commit('addSome', payload);
+    },
+  },
+};
+
+use this :
+modules: {
+    number: counterModule,
+  },modules: {
+    number: counterModule,
+  },
+
+
+------------------------------------------------------------------------------------------------------------
+-------------------------
+local module state : 
+if a state in module is not accessed out side that module
+local modules can be accessed by using rootState,rootGetters
+-------------------------
+------------------------------------------------------------------------------------------------------------
+name space :
+it is used to acces local state action,getters effected
+make namespaced = true in local module
+const counterModule = {
+  namespaced: true,
+  state() {
+    return {
+      count: 1,
+    };
+  },
+
+type1 :using store.getters
+counter(){
+        return this.$store.getters['number/favoriteCount']
+    }
+
+type2:using map helpers
+...mapGetters('number', ['favoriteCount']),
+------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,77 @@
+step 1:
+create a folde 'git'
+
+step 2:
+navigate to git filder and then run
+git clone [url]
+[url] : is url of your repository to that you want to push
+
+step 3 : staging
+check the differences and staged the changes
+git add []
+
+step 4 :commit
+git commit -m "message of what you change"
+
+step 5 : push
+git push
+
+--------------------------------------------------------------------------------------------------------------
+
+SETUP & INIT :
+Configuring user information, initializing and cloning repositories
+
+git init
+initialize an existing directory as a Git repository
+
+git clone [url]
+retrieve an entire repository from a hosted location via URL
+
+--------------------------------------------------------------------------------------------------------------
+
+STAGE & SNAPSHOT
+Working with snapshots and the Git staging area
+
+git status
+show modified files in working directory, staged for your next commit
+
+git add [file]
+add a file as it looks now to your next commit (stage)
+
+git reset [file]
+unstage a file while retaining the changes in working directory
+
+git diff
+diff of what is changed but not staged
+
+git diff --staged
+diff of what is staged but not yet committed
+
+git commit -m “[descriptive message]”
+commit your staged content as a new commit snapshot
+
+--------------------------------------------------------------------------------------------------------------
+
+BRANCH & MERGE
+Isolating work in branches, changing context, and integrating changes
+
+git branch
+list your branches. a * will appear next to the currently active branch
+
+git branch [branch-name]
+create a new branch at the current commit
+
+git switch [branch-name]
+switch to new branch
+
+git switch -
+switch back to previous branch
+
+git checkout
+switch to another branch and check it out into your working directory
+
+git merge [branch]
+merge the specified branch’s history into the current one
+
+git log
+show all commits in the current branch’s history
