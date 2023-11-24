@@ -1,0 +1,1783 @@
+Section 2 : Basics and core concepts-DOM Interactions
+
+Vue:
+vue can be used to define goals instead of the steps(Declarative approch)
+connect vue to html via 'mount' : vue then renders the real dom based on the connected template
+
+Interpolation and data binding : 
+
+we can bind data via interpolation ({{}} in template)
+
+<p>{{ DataVariable }}</p> //{{ DataVariable }}
+<p id="app">{{ DataVariable }}</p> // value
+ we can not interpolate the variable value out side the '#app'. if we try to do that it can not show values
+
+ we can execute any js expression inside the braces <p>{{ function () { retunr "hello" } }}</p> prints hello in the browser
+
+---------------------------------------------------------------------------------------------------------------
+
+Binding attribute with v-bind : 
+
+we can bind data via v-bind(':' to html attributes) directive
+
+to set value of html attributes interpolation is not working.So that we can use v-bind to set the value of html attributes 
+
+<p>You want <a href={{ vueLink }}>learne Vue.js</a></p>  ---- its not work because interpolation ----
+<p>You want <a v-bind:href="vueLink">learne Vue.js</a></p> ---- it will work ----
+
+data () {
+    return{
+        vueLink: "https://www.vue.js.com"
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+Methods in vue :
+
+we can listen for events via v-on or '@'
+
+<p>{{ helloFun() }}</p> this will display 'hello' in the browser
+
+methods: {
+    helloFun() {
+        retunr "hello"
+    }
+}
+
+data () {
+    return{
+        count: 0,
+    }
+}
+
+methods: {
+    funName() {
+        this.count = this.count+1
+    }
+}
+
+-----------
+Note :all data return from data method are merge into global vue object and that data can be accessed in methods by using 'this'(global vue object)
+-------------
+---------------------------------------------------------------------------------------------------------------
+
+Outputting raw html content with V-html :
+
+Update the element's innerHTML. Expects: string
+
+rawHtml = "<h1>this is header</h1>"
+<span v-html="rawHtml"></span> //this is header
+<span>{{ rawHtml }}</span> // <h1>this is header</h1>
+
+---------------------------------------------------------------------------------------------------------------
+Event binding :
+
+v-on directive is used for adding event listeners(click). onclick, React to that function(addOne) triggering that event
+
+<button v-on:click="addOne">Add</button>
+<button v-on:click="addOne()">Add</button> this and above are same
+
+methods: {
+    addOne() {
+        this.count += 1
+    }
+}
+
+Event arguments :
+
+we can pass arguments to function by 
+<button v-on:click="addOne(argument)">
+
+<button v-on:click="addOne(10)">
+
+recieve argument by 
+
+methods: {
+    addOne(num) {
+        this.count += num
+    }
+}
+
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input this link gives information about input element
+
+passing event object along with argument :
+
+passing event object along with argument having $ symboll($event) and argument
+
+<input type="text" @input="setfirstName($event, lastName)" />
+
+data () {
+    name:''
+    firstName: '',
+    lastName: 'Ramesh'
+
+}
+
+methods: {
+    addOne(event,lastName) {
+        this.name = event.target.value + this.lastName
+    }
+}
+
+Events modifiers :
+
+@submit.prevent="submiteForm" here 'prevent' is the modifier of submit event that prevents the data from reloading(reset data) after submition of form
+@click.right trigger function on mouse right click only , 
+@click.left trigger function on mouse left click only, 
+@click.center trigger function on mouse center click only
+@keyup.enter(enter,shift,page-down) triger function on enter
+---------------------------------------------------------------------------------------------------------------
+
+v-once directive :
+once the value is given it can not be changed at any way
+
+<button @click="increase(5)">+</button>
+  <p v-once>initial value : {{ count }}</p> // output 5 even increase or decrease
+  <p>result After changes : {{ count }}</p> // changes on increament and decreament
+<button @click="decrease(3)">-</button>
+
+data() {
+  retunr{
+    count: 5
+  }
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+v-model :
+
+combination of v-bind:value="name" v-on:click="takeData"
+
+<input type="text" v-model="name" />
+<input type="text" v-bind:value="name" @input="takeData" /> both are same
+
+data () {
+    retunr{
+        name: ''
+    }
+}
+
+methods: {
+    takeData() {
+        this.name = event.target.value 
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+computed properties :
+when dependency(varible that used in a function(function written in computed property) changes) changes at that time it will execute the function
+position of computed not imporatant it can place after data() or method
+calling computed function
+
+<p> you name : {{ fullName() }}</p> this is wrong way dont use () after Function name it will work for normal method calling
+<p> you name : {{ fullName }}</p> right way of calling computed value
+
+---------------------------------------------------------------------------------------------------------------
+watchers :(use for http request)
+variable name in data and method name in watch are same but it(name variable in data) is not use directly in 'template'
+method in watch recieve two value newValue and oldValue
+<input type="text" v-model="name" />
+<p>{{ fullName }}</p>
+data(){
+    name : "",
+    fullName:""
+}
+
+watch : {
+    name(newValue,oldValue) {
+        this.fullName = newValue+" "+"matteda"
+    }
+}
+
+above is not best scenario to use watchers
+below is best scenario
+data(){
+    count:0,
+},
+watch: {
+    count(){
+        if(count > 50){
+            this.count = 0;
+        }
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+Methods vs computed vs watch
+
+Methods :
+
+1)use with event binding or data binding 
+2)Data binding : Method is executed for every "rerender" of the component
+3)use for events or data that really need to evaluated all the time
+
+Computed :
+1)use with data binding
+2)computed propeties are only re-evaluated if one of their "used values" changes
+3)use for data that depends on other data
+
+watch :
+1)not used directly in template
+2)Allows you to run any code in react to some changed data (ex. send Http request)
+3)use for any non data updates you make
+
+---------------------------------------------------------------------------------------------------------------
+Styling in vue :
+Dynamic css class and inline style binding are supported by vue
+
+inline styling :
+
+<div style="border-color: red;">Something is here</div>
+
+Dynamic Styling :
+
+.box {
+    width: 100px;
+    height: 50px;
+    border: 3px dotted gray;
+    margin: 2px;
+    text-align: center;
+}
+.active{
+    width: 100px;
+    height: 50px;
+    border: 3px solid red;
+    background-color: whitesmoke;
+    margin: 2px;
+    text-align: center;
+}
+
+data() {
+    retunr{
+      boxA: false,
+      boxB: false,
+      boxC: false,
+    }
+},
+watch : {
+    selectedBox() {
+      return { box: !boxA, active: boxA };
+    },
+}
+
+methods : {
+    selectBox(box) {
+      if (box == "A") {
+        // console.log("A");
+        this.boxA = true;
+        this.boxB = false;
+        this.boxC = false;
+      } else if (box == "B") {
+        // console.log("B");
+        this.boxA = false;
+        this.boxB = true;
+        this.boxC = false;
+      } else {
+        // console.log("C");
+        this.boxA = false;
+        this.boxB = false;
+        this.boxC = true;
+      }
+    },
+}
+
+Vue offers multiple Special syntaxes for efficient binding
+
+object based :
+
+<div @click="selectBox('A')" :class="{box:!boxA,active:boxA}">Box A</div>
+
+array based : 
+
+<div @click="selectBox('B')" :class="['box',{active:boxB}]">Box B</div>
+
+
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+section 3 : Renedering conditionals and listen
+
+condtinal rendering :
+
+v-if:
+v-if(and v-show) allows you to render content only if a certain condition is met
+v-if really removes or add elements from and to the DOM
+
+v-if="something"
+something is expression,function,variable,boolean value(true,false)
+
+v-else be immediate follow of v-if
+
+<p v-if="goals.length === 0">No course is added please add your course</p>
+<ul v-else>
+    <li>goal</li>
+</ul>
+
+v-if-else-if :
+v-if can be combined with v-else and v-else-if (only on direct sibling elements)
+
+correct way of using :
+
+<p v-if="condition">v-if condition checking</p>
+<p v-else-if="condition">v-if condition checking faile so else-if condition is checking</p>
+<p v-else> both conditions failed so else is executing</p>
+
+note : v-if can be combined with v-else and v-else-if (only on direct sibling elements)
+
+wrong way : 
+
+<p v-if="condition">v-if condition checking</p>'
+<p>something else</p> this is not correct way of using if,else if,else
+<p v-else-if="condition">v-if condition checking faile so else-if condition is checking</p>//error because not direct sibling of if element
+<p v-else> both conditions failed so else is executing</p>
+
+---------------------------------------------------------------------------------------------------------------
+v-show:
+
+v-show(and v-if)allows you to render content only if a certain condition is met
+
+v-if really removes and add elements from and to the DOM but v-show hide and shows elements from DOM by using CSS display property(display : none)
+in components:
+<ul v-show>
+    <li>goal</li>
+</ul>
+
+in DOM :
+<ul style="display:none">
+    <li>goal</li>
+</ul>
+
+---------------------------------------------------------------------------------------------------------------
+
+v-for :
+
+v-for can be used to render multiple elements dynamically
+
+note : if you need v-for and v-if, DONT USE THEM ON THE SAME ELEMENT. USE A WRAPPER WITH V-IF INSTEAD
+
+key:
+
+vue re-uses Dom elements  to optimize the performance this can leads to bugs if elements contains states
+Bind the key attribute to unique value to help vue identify elements that belongs to list content
+
+array looping :
+<li v-for="goal in goals">{{ goal }}</li>
+
+object looping : 
+
+<li v-for="(value,key,index) in {name:'Ramesh', age:34}" :key="index">{{ key }} : {{ value }}  index-{{ index }}</li>
+
+looping with in range(10) :
+
+<li v-for="(num,index) in 10" :key="index">index-{{ index }} -- {{ num }}</li>
+
+---------------------------------------------------------------------------------------------------------------
+
+section 5 :
+ 
+ Vue`s Reactivity
+
+ javascript is not react but vue designed in a way that is(vue) reactive
+
+ from below code 'msg' is re-assigned with new value(Hello!!) but 
+ console of 'wish' after re-assiging of 'msg' value prints same value of 'wish' as first console
+
+
+let msg = "hello!";
+
+let wish = msg + " " + "Ramesh";
+
+console.log(wish);
+
+msg = "Hello!!";
+console.log(wish);
+
+output : 
+hello! Ramesh before assigeing msg value
+hello! Ramesh After assigeing msg value
+
+------
+below example data object is warpped by proxy object in javascript
+if value of message key changed(proxy.message = "Hello!!!!";) by proxy object then value of message key of data object also changes
+Vue also working in a same way that when ever the value changes it will update the value and rerender
+const data = {
+  message: "hello!",
+  fullMessage: "Hello! Ramesh",
+};
+
+const handler = {
+  set(target, key, value) {
+    console.log(target);
+    console.log(key);
+    console.log(value);
+    if (key === "message") {
+      target.fullMessage = value + "World..";
+    }
+  },
+};
+
+const proxy = new Proxy(data, handler);
+//comment below line and run it will not print any thing, then uncomment and check
+proxy.message = "Hello!!!!";
+console.log(proxy.fullMessage);
+
+---------------------------------------------------------------------------------------------------------------
+
+template :  
+
+template is same as html but it is written in .js file and merge in html file by targeting app section
+dom will not consider the template tag
+
+<section id="app2">
+  <!-- <h2>App 2</h2> -->
+  <!-- <p>{{ food }}</p> -->
+</section>
+
+const app2 = Vue.createApp({
+  template: `
+    <p>{{ food }}</p>
+  `,
+  data() {
+    return {
+      food: "Biryani",
+    };
+  },
+});
+app2.mount("#app2");
+
+---------------------------------------------------------------------------------------------------------------
+
+ref :
+ it is used to refere the element in dom
+ it memorises the element and it values
+ use the refs in js by $refs
+
+ref internally in the form of below object
+refs = {
+    userText : {
+
+    }
+}
+
+ <input type='text' ref='userTex' />
+
+ this.message = this.$refs.userText.value;
+ console.dir(this.$refs.userText);//<input type='text' ref='userTex' />
+
+ ---------------------------------------------------------------------------------------------------------------
+
+Life cycle Methods : 
+
+we need to run some code dudring the these life cycle methods when it needed 
+
+after start the app
+
+createApp({}) : it will start the app but before start we have that is beforeCreate()
+
+beforeCreate() : Before the app is fully initialized and followed by created()
+
+created() : it knows data properties and general configuration and goes to compilation,after compilation reach to beforeMount()
+
+---- after compiling template ---
+
+beforeMount() : after compilation(remove unneccesary syntax and data) it goes to beforeMount(), Right before see something on screen (nothing will be visible to use on browser)
+next goes to mounted()
+
+Mounted() : now we can see somthing on screen if any actions or data changes it goes to beforeUpdate()
+
+--- we have vue instance if any data changes ---
+
+beforeUpdate() : before update has been full processed internally by vue in its app,after process goes to updated()
+
+updated() : update is vible on scree 
+
+---instance unmount---
+beforeUnmount() : before the app is unmounted in this phase we run code like remove coockie data,clealing local storage
+
+unmount() : it will run after it has been removed
+
+---------------------------------------------------------------------------------------------------------------
+
+section 7 :
+ Better development setup with vue cli :
+
+ fixing npm run serve (Vue CLI)
+
+  we will use a third-party tool (Vue CLI)  to create a new project. This tool, under the hood, uses NodeJS 
+ In case you're getting any errors when trying to run Vue projects (via npm run serve, after creating them via the Vue CLI), try the following adjustment:
+
+Replace the scripts entry in your project's package.json before running npm run serve:
+
+Windows:
+
+    "scripts": {  
+      "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",  
+      "build": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",  
+      "lint": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint"
+    },
+
+Mac and Linux:
+
+    "scripts": {  
+      "serve": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",  
+      "build": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",  
+      "lint": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint"
+    },
+
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+extension for veu development `vutur`
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+creating components :
+
+component name must be :
+kebap case : kebab-case is a variable naming convention where each word is in lower case, and separated by dashes. 
+It is also known as dash-case, list-case, or spinal-case.
+pascal case vs camel case :
+PascalCase vs camelCase
+pascal case requires the first letter of the first word to also be capitalized. So, when using pascal case, 
+every word starts with an uppercase letter (in contrast to camel case, where the first word is in lowercase).
+
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+An Alternative Setup - using "npm init" & Volar :
+
+But, alternatively and 100% optionally to using the Vue CLI and Vetur, you can also use two different tools / approaches:
+
+1. Use "npm init vue" instead of installing and using the Vue CLI --------
+
+2. Use the "Volar" extension instead of Vetur ----------
+
+You don't have to use either of the two, but you may want to experiment with them. no matter which setup you're using.
+
+'npm init vue' uses an official package to help you initialize Vue projects. 
+You get a command line wizard that walks you through project creation, comparable to what you get with the Vue CLI (though with slightly different choices and options).
+
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+section 8 : Component Communication
+
+sending props :
+
+while sending prop if it is two words then it must be kebap case
+
+<friend-contact
+  name="Ramesh Matteda"
+  phone-number="123 4567 890"
+  mail-adress="ramesh@gmail.com"
+></friend-contact>
+
+recieving props : 
+
+at recieving component use "props" property in script just before data
+but at reciever component props name must be camel case and string('name','phoneNumber')
+
+---------------------------
+note : props name (props:['name','phoneNumber']) and variavle name(declared in data(){ }) are not ""identical""
+--------------------------
+
+<script>
+export default {
+  props: ["name", "phoneNumber", "mailAddres"],
+  data() {}
+}
+</script>
+
+using props in component :
+
+no need to use like props.name, this.name. we can use with direct name declared in props:['name','phoneNumber']
+
+<template>
+  <li>
+    <h2>{{ name }}</h2>
+    <button @click="toggleDetails">
+      {{ detailsAreVisible ? "Hide" : "Show" }} Details
+    </button>
+    <ul v-if="detailsAreVisible">
+      <li>
+        <strong>Phone:</strong>
+        {{ phoneNumber }}
+      </li>
+      <li>
+        <strong>Email:</strong>
+        {{ mailAddres }}
+      </li>
+    </ul>
+  </li>
+</template>
+
+Changing or mutating props : 
+
+we can not change props direct instead we assigne props value to other variable and we can change(mutate)
+
+props: [isFavorite],
+data(){
+  retunr{
+    addFavorite:this.isFavorite
+  }
+}
+
+#error
+if (this.isFavorite === "1") {
+  this.isFavorite = "0";
+} else {
+  this.isFavorite = "1";
+}
+
+correct : adding prop to other variavle in data(){}
+
+utilising other(addFavorite) variable not prop(isFavorite) variable
+
+if (this.addFavorite === "1") {
+  console.log(this.addFavorite + " ifssss");
+  this.addFavorite = "0";
+} else {
+  console.log(this.addFavorite + " elsess");
+  this.addFavorite = "1";
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+validating props :
+
+type : 
+
+ In general, you can learn all about prop validation in the official docs: https://v3.vuejs.org/guide/component-props.html
+
+Specifically, the following value types (type property) are supported:
+
+String,Number,Boolean,Array,Object,Date,Function,Symbol
+
+But type can also be any constructor function (built-in ones like Date or custom ones).
+
+ note : boolean has to be send as string('true') or an expression evaluate to boolean
+ requires : true(if it is mandatory) or false(if it is not needed)
+ default : default value we set
+validator : this will check the value we recievw of our required type or not,
+ validator is a function or expression
+
+
+sending :
+<friend-contact
+  name="Ramesh Matteda"
+  phone-number="123 4567 890"
+  mail-addres="ramesh@gmail.com"
+  is-favorite="0"
+></friend-contact>
+
+recieved :
+
+first type :
+
+  props: {
+    name: String,
+    phoneNumber: String,
+    mailAddres: String,
+    isFavorite: String,
+  }
+
+second type :
+props: {
+    // name: String,
+    // phoneNumber: String,
+    // mailAddres: String,
+    // isFavorite: String,
+    name: {
+      type: String,
+      required: true,
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
+    },
+    mailAddres: {
+      type: String,
+      required: true,
+    },
+    isFavorite: {
+      type: String,
+      required: false,
+      default: "0",
+      validator: function (value) {
+        return value === "0" || value === "1";
+      },
+    },
+  },
+
+---------------------------------------------------------------------------------------------------------------
+
+Dynamic prop values :
+
+<friend-contact
+  v-for="friend in friends"
+  :key="friend.id"
+  :name="friend.name"
+  :phone-number="friend.phone"
+  :mail-addres="friend.email"
+  :is-favorite="false"
+></friend-contact>
+
+data(){
+  friends: [
+        {
+          id: "manuel",
+          name: "Manuel Lorenz",
+          phone: "0123 45678 90",
+          email: "manuel@localhost.com",
+        },
+        {
+          id: "julie",
+          name: "Julie Jones",
+          phone: "0987 654421 21",
+          email: "julie@localhost.com",
+        },
+      ],
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+Emmiting Custom Events(child => parent communication) :
+
+when we want change something from the child component in parent component we use $emit()($ followed by  $emit())
+
+from child :
+<button @click="toggleFavorite">Favorite</button>  trigger event from this element
+or
+we can also emit events directly without triggering any function
+------------------
+<button @click="$emit('toggle-favorite', id)">Delete</button>
+-------------------
+
+event comes to below function, but $emit() emite the event to another element in the parent(@toggle-favorite="favoriteStatus")
+
+toggleFavorite() {
+  this.$emit("toggle-favorite", this.id);//here first argument is event name(toggle-favorite) and followed by one or many argumet values
+},
+-----------
+Note : event name at emiter must be in kebap camelCase
+----------
+
+In parent :
+
+instead of click event we create new event(custome event) and bind new function(favoriteStatus)
+
+<friend-contact
+  :id="friend.id"
+  @toggle-favorite="favoriteStatus"
+></friend-contact>
+
+favoriteStatus(id) {
+  const fav = this.friends.find((friend) => friend.id === id);
+  fav.isFavorite = !fav.isFavorite;
+  // alert("working" + id);
+},
+
+custome events validation : 
+
+validation can be done in child element
+
+one way :
+emits: {
+  'event-name': any validater
+},
+
+second way :
+emits:['event-name']
+
+ emits:['toggle-favorite']
+  emits: {
+    "toggle-favorite": function (id) {
+      if (id) {
+        return true;
+      } else {
+        console.warn("id is missing");
+        return false;
+      }
+    },
+  },
+---------------------------------------------------------------------------------------------------------------
+
+provider and injecter :
+
+for prover and injection there must be ancestors(App.vue),parent(KnowledgeBase.vue),child(KNowledgeGrid.vue:) and subchild(KnowledgeElement) type of relation
+App.vue:
+<knowledge-base @select-topic="activateTopic"></knowledge-base>
+
+between data(){} and methods write provider function or property with array
+
+data(){
+  topics : [array of objects]
+}
+
+provider: {
+  topics : [array of objects] //if use this way any changes made in array will not reflects in provider
+}
+
+best way is provider function:----------------
+provide() {
+    return {
+      topics: this.topics,
+    };
+  },
+----------------------
+injection :
+KnowledgeBase.vue:
+<knowledge-grid :topics="topics" @select-topic="$emit('select-topic', $event)"></knowledge-grid>
+
+here we inject the data provoded from ancestors using inject propery instead
+
+export default {
+  // props: ['topics'],
+  inject: ['topics'],
+  emits: ['select-topic'],
+};
+
+KnowledgeGrid.vue:
+<knowledge-element
+  v-for="topic in topics"
+  :key="topic.id"
+  :id="topic.id"
+  :topic-name="topic.title"
+  :description="topic.description"
+  @select-topic="$emit('select-topic', $event)"
+></knowledge-element>
+
+---------------------------------------------------------------------------------------------------------------
+provide and inject custom events :
+ must me ancestor,parent and child relation
+
+ provide from ancestor or parent 
+
+ app.vue :
+
+ provide() {
+    return {
+      topics: this.topics,
+      selectTopic: this.activateTopic,
+    };
+  },
+
+  methods: {
+    activateTopic(topicId) {
+      this.activeTopic = this.topics.find((topic) => topic.id === topicId);
+    },
+  },
+
+inject at child or subchild 
+KnowledgeElement.vue :
+<button @click="selectTopic(id)">Learn More</button>
+
+  inject: ['selectTopic']
+
+---------------------------------------------------------------------------------------------------------------
+
+section 9:
+
+components registration :
+
+global Registration :
+
+global components are registered in main.js file.
+if a component registerd as global then it will be used in any where in project
+
+import { createApp } from "vue";
+
+import App from "./App.vue";
+import TheHeader from "./components/TheHeader.vue";
+import BaseBadge from "./components/BaseBadge.vue";
+import BadgeList from "./components/BadgeList.vue";
+import UserInfo from "./components/UserInfo.vue";
+
+const app = createApp(App);
+
+//global component registration
+app.component("the-header", TheHeader);
+app.component("base-badge", BaseBadge);
+app.component("badge-list", BadgeList);
+app.component("user-info", UserInfo);
+
+app.mount("#app");
+
+
+local Registration :
+
+if a component registerd in another component then the registerd components are local components 
+local components are used only locally(with in the component)
+
+<template>
+  <the-header></the-header>
+  <badge-list></badge-list>
+  <user-info></user-info>
+</template>
+
+<script>
+import TheHeader from "./components/TheHeader.vue";
+import BadgeList from "./components/BadgeList.vue";
+import UserInfo from "./components/UserInfo.vue";
+
+export default {
+  components: {
+    TheHeader,
+    BadgeList,
+    UserInfo,
+  },
+}
+</script>
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Scoped stying :
+
+if a style tag have "scoped" attribute then the styles are "not applyed globally"
+<style scoped>
+  <h2></h2> // any h2 element out side this component not effect by this style
+</style>
+
+---------------------------------------------------------------------------------------------------------------
+
+Slots :
+ slots are used to wrape styles with out effecting the content inside the tags 
+  <section>
+    <base-card>
+      <p>{{ infoText }}</p> // slot content
+    </base-card>
+  </section>
+
+
+ BaseCard.vue:
+
+ <template>
+  <div>
+    <slot></slot>
+  </div>
+</template>
+
+<style scoped>
+div {
+  margin: 2rem auto;
+  max-width: 30rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  padding: 1rem;
+}
+</style>
+
+---------------------------------------------------------------------------------------------------------------
+
+named slots :(v-slot:defualt or #defualt)
+
+slots can be use v-slot or # before the name of slot
+
+if you use more than one slot then use (named slots) name attribute on slot tag
+name must not be wrapped element name
+dont name all slot beacaue we must have one unnamed slot
+if we want to send tags to slot  then wrapp them in default template(which are not rendered by dom) element
+use v-slot attribute on template element using name(header) this name tells that this will goes to that slot
+
+<section>
+    <base-card>
+      <template v-slot:header>
+        <h3>{{ fullName }}</h3>
+        <base-badge :type="role" :caption="role.toUpperCase()"></base-badge>
+      </template>
+      <template v-slot:default>
+        <p>{{ infoText }}</p>
+      </template>
+    </base-card>
+  </section>
+
+  BaseCard.vue :
+  <template>
+  <div>
+    <header>
+      <slot name="header"></slot>
+    </header>
+    <slot></slot>
+  </div>
+</template>
+
+---------------------------------------------------------------------------------------------------------------
+
+default element in slots :
+ we can also use default element in the slots
+
+ <header>
+  <slot name="header">
+    <h2>The Default Slot</h2>
+  </slot>
+</header>
+
+console the slots :
+<script>
+export default {
+  mounted() {
+    console.log(this.$slots);
+  },
+};
+</script>
+
+ouput will be proxy object that wrapps the slot elements
+
+---------------------------------------------------------------------------------------------------------------
+
+scoped slots :
+
+we can send data through slots as props
+
+CourseGoal.vue :
+<li v-for="goal in goals" :key="goal">
+    <!-- {{ goal }} -->
+    <slot :item="goal" another-prop="fwbbtbwr"></slot>
+  </li>
+</ul>
+
+use with name(slotProps).name may be any thing
+
+App.vue:
+<course-goals #default="slotProps">//entire content will goes to slot then name this with defualt name and prop name('slotProps')
+  <h2>{{ slotProps.item }}</h2>//accessing bind value from slot
+  <p>{{ slotProps["another-prop"] }}</p>//accessing string value
+</course-goals>
+
+---------------------------------------------------------------------------------------------------------------
+
+Dynamic components :
+
+we have component tag that have 'is' attribute will have the value of components name(avtive-goals)
+
+<template>
+<button @click="setSelectedComponet('active-goals')">ActiveGoals</button>
+  <button @click="setSelectedComponet('manage-goals')">ManageGoals</button>
+  -----------
+<component :is="selectedComponent"></component>
+---------
+</template>
+
+<script>
+import TheHeader from "./components/TheHeader.vue";
+import ActiveGoals from "./components/ActiveGoals.vue";
+import ManageGoals from "./components/ManageGoals.vue";
+
+export default {
+  components: {
+    TheHeader,
+    ActiveGoals,
+    ManageGoals,
+  },
+  data() {
+    return {
+      selectedComponent: "active-goals",
+    };
+  },
+  methods: {
+    setSelectedComponet(cmp) {
+      this.selectedComponent = cmp;
+    },
+  },
+};
+</script>
+
+---------------------------------------------------------------------------------------------------------------
+
+keep Dynamic componets alive :
+ 
+ when switching between components using <component></component> tag the input element is removed and adding new input element while switching
+ to keep the element in dom while switching we use <keep-alive></keep-alive> tag
+
+<keep-alive>
+  <component :is="selectedComponent"></component>
+</keep-alive>
+
+---------------------------------------------------------------------------------------------------------------
+teleport : 
+
+it is a tag tag used to insert hmlt tags into perticulat area of tag
+it has 'to' attribute that tell where to insert the tag
+
+<Teleport to="body">// insert into bosy tag
+<Teleport to="#app">// inser into tag that has tag id with name app
+  <error-message v-if="showAlert">
+    <h2>Alert</h2>
+    <p>input field is empty</p>
+    <button @click="errorHanlde">Okey</button>
+  </error-message>
+</Teleport>
+
+
+---------------------------------------------------------------------------------------------------------------
+
+section 11 : 
+
+forms :
+
+<template>
+  <form @submit.prevent="submitForm">
+
+    <div class="form-control">
+      <label for="user-name">Your Name</label>
+      <input id="user-name" name="user-name" type="text" v-model="userName" />
+    </div>
+  
+  // taking number type of data
+
+    <div class="form-control">
+      <label for="age">Your Age (Years)</label>
+      <input
+        id="age"
+        name="age"
+        type="number"
+        v-model="userAge"
+        ref="enterdAge"
+      />
+    </div>
+
+    //select option 
+
+    <div class="form-control">
+      <label for="referrer">How did you hear about us?</label>
+      <select id="referrer" name="referrer" v-model="refererr">
+        <option value="google">Google</option>
+        <option value="wom">Word of mouth</option>
+        <option value="newspaper">Newspaper</option>
+      </select>
+    </div>
+
+    // check box type 
+
+    <div class="form-control">
+      <h2>What are you interested in?</h2>
+      <div>
+        <input
+          id="interest-news"
+          name="interest"
+          type="checkbox"
+          value="videos"
+          v-model="instrested"
+        />
+        <label for="interest-news">News</label>
+      </div>
+      <div>
+        <input
+          id="interest-tutorials"
+          name="interest"
+          type="checkbox"
+          value="tutorials"
+          v-model="instrested"
+        />
+        <label for="interest-tutorials">Tutorials</label>
+      </div>
+      <div>
+        <input
+          id="interest-nothing"
+          name="interest"
+          type="checkbox"
+          value="nothing"
+          v-model="instrested"
+        />
+        <label for="interest-nothing">Nothing</label>
+      </div>
+    </div>
+
+
+    //type is radio
+
+    <div class="form-control">
+      <h2>How do you learn?</h2>
+      <div>
+        <input
+          id="how-video"
+          name="how"
+          type="radio"
+          value="vedios"
+          v-model="how"
+        />
+        <label for="how-video">Video Courses</label>
+      </div>
+      <div>
+        <input
+          id="how-blogs"
+          name="how"
+          type="radio"
+          value="blogs"
+          v-model="how"
+        />
+        <label for="how-blogs">Blogs</label>
+      </div>
+      <div>
+        <input
+          id="how-other"
+          name="how"
+          type="radio"
+          value="others"
+          v-model="how"
+        />
+        <label for="how-other">Other</label>
+      </div>
+    </div>
+
+    // one sigle check box different from group of check boxes
+
+    <br />
+    <div>
+      <input
+        id="agreement"
+        name="agreement"
+        type="checkbox"
+        v-model="agreement"
+      />
+      <label for="agreement">Confirm terms and conditions</label>
+    </div>
+    <div>
+      <button>Save Data</button>
+    </div>
+  </form>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      userName: '',
+      userAge: null,
+      refererr: 'google',
+      instrested: [],
+      how: null,
+      agreement: false,
+    };
+  },
+  methods: {
+    submitForm() {
+      console.log('User Name : ');
+      console.log(this.userName);
+      console.log('user Age : ');
+      console.log('using ref value as string ');
+      console.log(this.$refs.enterdAge.value);
+      console.log('automatically converted to number by type=number');
+      console.log(this.userAge);
+      console.log('nomal number');
+      console.log(23);
+      console.log('how you know :');
+      console.log(this.refererr);
+      console.log('are you intrested in : ');
+      console.log(this.instrested);
+      console.log('how you learn : ');
+      console.log(this.how);
+      console.log('agreements : ');
+      console.log(this.agreement);
+    },
+  },
+};
+</script>
+
+---------------------------------------------------------------------------------------------------------------
+
+custom controlled component :
+
+if a form contains button act as submit button if you make that as normal button by mention type='button'
+
+<form>
+  <button type='button></button> // it is normal button not submite button
+</form>
+
+---------------------------------------------------------------------------------------------------------------
+ section 12 : sending http request 
+
+ sending post request to store Data :
+
+ fetch is built in method takes two parameters
+ 1)url : 'https://vuebackend-ab7ae-default-rtdb.firebaseio.com/surveys.json'
+
+ 2)payload : which is an object contains method,headers,body properties
+
+ methods : tells which type(GET,POST,PUT,PATCH,DELETE) of request is that
+
+ headers : which tells to browser that the content is in JSON formate
+ body : which takes an object contains the data the we sending
+
+ {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    name: this.enteredName,
+    rating: this.chosenRating,
+})
+
+ fetch(
+  'https://vuebackend-ab7ae-default-rtdb.firebaseio.com/surveys.json', /// fire base link must add(surveys.json) string to url
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: this.enteredName,
+      rating: this.chosenRating,
+    }),
+  }
+);
+
+
+---------------------------------------------------------------------------------------------------------------
+
+Http Requests & Http Methods (Verbs)
+
+
+
+In the last lecture, we sent a POST request to a REST API.
+
+What is that? A POST request? And a REST API?
+
+There are different "kinds" of Http requests you could say - defined by the method (POST, GET, DELETE, ...) you attach to them (via the "method" you define on an outgoing request).
+
+And the server to which you're sending those requests may then react in which ever way it is configured to react to incoming requests with different methods.
+
+It may store data in a database for an incoming POST request, it may fetch data for a GET request.
+
+Typically, servers are built to work as a "REST API" - that means they have clearly defined "endpoints" (URL + Http method combinations) for which they do different things.
+
+You can learn more about REST APIs (and how to build your own one!) with this free series: https://academind.com/learn/node-js/building-a-restful-api-with/what-is-a-restful-api-/
+
+Also make sure you understand, in general, how the web works: https://academind.com/learn/web-dev/how-the-web-works/
+
+
+---------------------------------------------------------------------------------------------------------------
+
+Using Axios Instead Of "fetch()"
+
+
+In this course, we use the native fetch() API for sending Http requests. It's built into the browser and hence we don't have to install any extra package to use it.
+
+If you prefer third-party libraries like Axios (https://github.com/axios/axios) you can of course also use such libraries though.
+
+For example, you could replace the fetch() code from the last lecture with this Axios code:
+
+Instead of:
+
+    fetch('https://vue-http-demo-85e9e.firebaseio.com/surveys.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.enteredName,
+        rating: this.chosenRating,
+      }),
+    });
+
+you can write this code with Axios:
+
+    import axios from 'axios'; // at the start of your <script> tag, before you "export default ..."
+    ...
+    axios.post('https://vue-http-demo-85e9e.firebaseio.com/surveys.json', {
+      name: this.enteredName,
+      rating: this.chosenRating,
+    });
+
+As you can see, with Axios, you have to write less code. It automatically sets the Content-Type header for you, it also automatically converts the body data to JSON.
+
+BUT - as a downside - you have to add an extra package, which ultimately increases the size of the web app you're shipping in the end.
+
+Later in the module, we'll also start reacting to the response returned by the request.
+
+fetch() returns a Promise, hence we can use then(), catch() and async/ await there. For Axios, it's just the same - it also returns a Promise.
+
+
+---------------------------------------------------------------------------------------------------------------
+
+section13 : routing 
+
+Routing setup :
+
+to install routing in project use
+npm install --save vue-router // normal router --save will save it as global installation
+npm install --save vue-router@next //latest router
+
+to use routing :
+import createRouter funtion from vue-route
+pass an object contains history,routes array
+register routes in routes array contains objects,each object contains path,component key with values
+we have to use the 'router' to insert the routing in app(app.use(router))
+main.js :
+
+import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+
+import App from './App.vue';
+import TeamsList from './components/teams/TeamsList.vue';
+import UsersList from './components/users/UsersList.vue';
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/teams', component: TeamsList },
+    { path: '/users', component: UsersList },
+  ],
+});
+const app = createApp(App);
+app.use(router);
+
+app.mount('#app');
+
+
+
+insert the routing in app by using router-view component in app
+
+App.js :
+
+<template>
+  <the-navigation @set-page="setActivePage"></the-navigation>
+  <main>
+    <!-- <component :is="activePage"></component> -->
+    <router-view></router-view> // here we insert the routing in app
+  </main>
+</template>
+
+---------------------------------------------------------------------------------------------------------------
+
+navigating with router links :
+
+use <router-link> tag to navigate between pages 
+<router-link> is same as <a>
+<router-link> is same as slots we can pass tags or text in router-link tag
+router-link have 'to' attribute takes path as value to which we can navigate on click that link
+
+
+if you want to style router-link tag then style the  <a> tag instead
+
+<nav>
+  <ul>
+    <li>
+      <!-- <button @click="setActivePage('teams-list')">Teams</button> -->
+      <router-link to="/teams">Teams</router-link>
+    </li>
+    <li>
+      <!-- <button @click="setActivePage('users-list')">Users</button> -->
+      <router-link to="/users">Users</router-link>
+    </li>
+  </ul>
+</nav>
+
+a {
+  /* font: inherit; */
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  display: inline-block;
+}
+
+a:hover,
+a:active {
+  color: #f1a80a;
+  border-color: #f1a80a;
+  background-color: #1a037e;
+}
+
+style the link on active use linkActiveClass in createRouter() function and style in component where it was using
+app.js:
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/teams', component: TeamsList },
+    { path: '/users', component: UsersList },
+  ],
+  linkActiveClass: 'active',
+});
+
+TheNavigation.vue:
+
+a.active {
+  color: #f1a80a;
+  border-color: #f1a80a;
+  background-color: #1a037e;
+}
+
+---------------------------------------------------------------------------------------------------------------
+
+programtic navigation :
+ you want to navigate on clicking button from current page another we have push() method of ($ fallowed by router) $router (declared in main .js) object
+push method takes an string that is path to navigate
+
+----------
+this.$router.push('/teams')
+------------------------
+this.route
+object that contains full information about link(fullPath,path,params,query)
+console.log(this.$route);
+console.log(this.$route.params);
+console.log(this.$route.params.teamId);
+
+we can update the params data by using $route and watches
+watch: {
+    $route(newValue) {
+      this.teamMembers(newValue);
+    },
+  },
+---------------------------------------------------------------------------------------------------------------
+
+passing params as props : 
+
+in createRoute function have route objects in routes array. if a route hava 'props:true' propert then we can access the params as props in that component(TeamMembers.vue)
+main.js
+{ path: '/teams/:teamId', component: TeamMembers, props: true },
+
+in TeamMembers.vue compoenent the recieve that prop
+  props: ['teamId'],
+---------------------------------------------------------------------------------------------------------------
+
+redirect and catch all routes :
+
+redirect :
+using redirect the url also updated to '/teams' when ever you hit the '/' url
+{ path: '/', redirect: '/teams' },
+
+url:http://localhost:8080/
+after hitting : http://localhost:8080/teams
+
+aliase :
+using aliase if you hit the aliase url('/') it can not update the url it will reamine same
+{ path: '/teams', component: TeamsList, alias: '/' },
+
+url:http://localhost:8080/
+after hitting :
+http://localhost:8080/
+
+catch all :
+if user give any url it hase to catch
+{ path: '/:anyUrl(.*)', redirect: '/teams' },
+
+:anyurl() is user defind name ,this name can be anything
+.* used to catch ant url
+
+url:http://localhost:8080/hritgufmnb
+after hiting :
+http://localhost:8080/teams // beacaue we use redirect,if we want we can use aliase also
+
+---------------------------------------------------------------------------------------------------------------
+
+Nested routing : 
+nested routing can be registerd in the route object with children property
+children can have array of nesting routes
+parent route have the <router-view> in component
+
+routes: [
+    { path: '/', redirect: '/teams' },
+    // { path: '/teams', component: TeamsList, alias: '/' },
+
+    //child routing or nested routing
+    {
+      path: '/teams',
+      component: TeamsList,
+      children: [{ path: ':teamId', component: TeamMembers, props: true }],
+    },
+    { path: '/users', component: UsersList },
+    // { path: '/teams/:teamId', component: TeamMembers, props: true },
+    { path: '/:anyUrl(.*)', redirect: '/teams' },
+  ],
+
+<div>
+//router view
+    <router-view></router-view>
+    <ul>
+      <teams-item
+        v-for="team in teams"
+        :key="team.id"
+        :id="team.id"
+        :name="team.name"
+        :member-count="team.members.length"
+      ></teams-item>
+    </ul>
+  </div>
+
+---------------------------------------------------------------------------------------------------------------
+named routes and location object :
+ this can be help full in nested routing
+ name a route 
+
+ {
+    name: 'teams-list',
+    path: '/teams',
+    component: TeamsList,
+    children: [
+      {
+        name: 'team-members',
+        path: ':teamId',
+        component: TeamMembers,
+        props: true,
+      },
+    ],
+  },
+
+use the name of router in nested routing
+
+<router-link :to="viewMembersLink">View Members</router-link>
+
+viewMembersLink() {
+  // return '/teams/' + this.id;
+  return { name: 'team-members', params: { teamId: this.id } };
+},
+
+we can also use in the way to navigate that url
+this.$router.push({ name: 'team-members', params: { teamId: this.id } })
+
+---------------------------------------------------------------------------------------------------------------
+query params :
+ this can be added in to path object
+ return { name: 'team-members', params: { teamId: this.id } ,query:{sort:'asc'}};  //localhost:8080/teams/t3/?sort:asc
+
+ but we dont need to declared in route object
+ {
+    name: 'teams-list',
+    path: '/teams',
+    component: TeamsList,
+    children: [
+      {
+        name: 'team-members',
+        path: ':teamId',
+        component: TeamMembers,
+        props: true,
+      },
+    ],
+  },
+  query params we can not add them directly to url but we access them by using
+  this.$route.query
+
+---------------------------------------------------------------------------------------------------------------
+rendering multiple routes with named router view :
+
+in routes object of main.js we have propety 
+footer is the name of router view that goes to router-view with name footer
+components: { default: TeamsList, footer: TeamsFooter },
+
+in componets we have to use <router-view> with names and one default router-view tag
+<div>
+    <the-navigation></the-navigation>
+    <main>
+      <!-- <component :is="activePage"></component> -->
+      <router-view></router-view> //default view
+    </main>
+    <router-view name="footer"></router-view> // named router view
+  </div>
+---------------------------------------------------------------------------------------------------------------
+controlling scroll Behavior :
+we hava an object of scrollBehavior inbuilt function in createRouter()
+it takes to,from and savedPosition as arguments
+arguments names are optional
+scrollBehavior(to, from, savedPosition) {
+  // console.log(to);
+  // console.log(from);
+  // console.log(savedPosition);
+  if (savedPosition) {
+    return { savedPosition };
+  } else {
+    return { left: 0, top: 0 };// when ever the reload it goes to top
+  }
+},
+
+
+---------------------------------------------------------------------------------------------------------------
+Navogation guards : 
+
+router have method of beforeEach() it takes to,from and next as arguments if next(false) will not allowe to navigate
+to is object that have full infomation about where to navigate url information
+from have the information of url that from where it was come
+router.beforeEach(function (to, form, next) {
+  console.log(to);
+  next();
+  if (to.path === 'teams') {
+    next();
+  } else {
+    next(true);
+  }
+});
+
+if want to guard the individual route we have beforeEnter()
+this can be checked in both places
+in routes object of router array :
+it uses beforeEnter()
+{
+  path: '/users',
+  components: { default: UsersList, footer: UserFooter },
+  beforeEnter(to, from, next) {
+    console.log('users before entered');
+    next();
+  },
+},
+
+in the users compoent :
+ at end of scrpt tag close
+ it uses beforeRouteEntered
+ export default {
+  components: {
+    UserItem,
+  },
+  inject: ['users'],
+  methods: {
+    switchToTeams() {
+      this.$router.push('/teams');
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    console.log('users componet before entered');
+    next();
+  },
+};
+
+beforeRouteUpdate() :
+this can be used if any components have anothe component but url has to update the we use before update
+  beforeRouteUpdate(to, from, next) {
+    console.log('before team members update in team members componet');
+    next();
+  },
+
+  afterEach() :
+  it dont have next beacuse it hase to execute for every router
+  router.afterEach(function () {
+  console.log('global after');
+});
+
+beforeRouteLeave () :
+
+beforeRouteLeave(to,from,next){
+  console.log('before leaving this url')
+}
+
+---------------------------------------------------------------------------------------------------------------
+meta data :
+it is an property of route object we can access that by using $route objectwe can send any data to any component by url by setting meta data property
+{
+  name: 'teams-list',
+  path: '/teams',
+  meta: { needAuth: false },
+  components: { default: TeamsList, footer: TeamsFooter },
+  children: [
+    {
+      name: 'team-members',
+      path: ':teamId',
+      component: TeamMembers,
+      props: true,
+    },
+  ],
+},
+
+console.log(this.$route.meta) // {needAuth : false}
+
+
+---------------------------------------------------------------------------------------------------------------
+vuex :
+
+
+
+---------------------------------------------------------------------------------------------------------------
