@@ -1,0 +1,110 @@
+document reference : http://v3.vuejs.org/
+
+video reference : https://www.youtube.com/watch?v=FXpIoQ_rT_c
+
+insert <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> this tag in body of html if you want to designe static sites
+
+creating vue app :
+create vue app by 
+ let app = Vue.createApp({
+    object of parameters
+    data : function() {
+        return {
+            message : "I am from vue app script",
+        }
+    }
+ })
+
+Mounting app :
+ mount that app in html under the div with 'app' as id name by 
+
+ app.mount('#app');
+
+Using variables :
+ use the created message variable in html under the id 'app'
+ <div id="app">
+        hello learner
+        <hr />
+        {{message}}
+    </div>
+
+
+    ----------------------------------------------------------------------------------------------------
+    Directives  :
+    v-model : 
+    v-model can be used on a component to implement a two-way binding.
+
+    v-if :
+    v-if="variableName"
+    it show element if it is true but if it false it doesnot shows element on the inspection window also
+
+    v-show : 
+    v-show="variableName"
+    same as v-if but in v-show if the variable value is false it not show but element is till exist in inspection window
+
+    variableValue = fasle means display : none ;
+
+    v-claok :
+    Used to hide un-compiled template until it is ready.
+    mainly used with app element
+
+    v-bind:lable="varibleName" or :lable="variableName" here lable is also variable name 
+    The v-bind directive lets us bind an HTML attribute to data in the Vue instance. This makes it easy to change the attribute value dynamically.
+
+    without using v-bind if you want to pass a string no need to v-bind that
+    <input lable="enter password" />
+    <input lable="enter email" />
+
+    ----------------------------------------------------------------------------------------------------
+    Events and Methods :
+
+    Events :
+    we can handle events by v-on:click="functionName" or @click="function name"
+
+    <button v-on:click="boxHidenShow = !boxHidenShow" >Hide Box</button>
+    <button @click="toggleBox()" >{{buttonText ? 'Hide Box' : 'show Box'}}</button>
+
+    @click.right : it listen for right click of mouse event and not listen the left click of mouse
+
+    key Board events :
+    @keyup : it takes care of key board events
+    @keyup.enetr="functionName"
+
+    methods :
+
+    msthods can wite in vue as object 
+    methods : {
+        toggle : function(){
+            this.varibleName = ! this.variableName
+        }
+
+        or 
+
+        toggle() {
+            this.varibleName = ! this.variableName
+        }
+    }
+
+    -----------------------------------------------------------------------------------------------------
+    note : for different way of generating login form watch video from 57:30 to 1:07
+    ----------------------------------------------------------------------------------------------------
+    loops :
+
+    cardData : [
+        {
+            name : "ramesh",
+            age : "25"
+            DOB : "1996-04-08"
+        },
+        {
+            name : "ramesh",
+            age : "25"
+            DOB : "1996-04-08"
+        }
+    ]
+
+    <card v-for="(card,index) in cardData" :key="index" >{{card.name}}</card>
+
+    ---------------------------------------------------------------------------------------------------
+    life cycle hook :
+    
